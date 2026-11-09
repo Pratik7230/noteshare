@@ -1,6 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
-  <!-- White Background -->
-  <rect x="0" y="0" width="500" height="500" fill="#ffffff" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="76 60 380 380" width="500" height="500" fill="none">
+  <style>
+    .share-node { fill: #1E1E2F; }
+    .share-line { stroke: #1E1E2F; }
+    .node-dot { fill: #ffffff; }
+    @media (prefers-color-scheme: dark) {
+      .share-node { fill: #ffffff; }
+      .share-line { stroke: #ffffff; }
+      .node-dot { fill: #007BFF; }
+    }
+  </style>
 
   <!-- Document Base -->
   <path d="M120 70 h180 l100 100 v240 a20 20 0 0 1 -20 20 h-260 a20 20 0 0 1 -20 -20 v-320 a20 20 0 0 1 20 -20 z" fill="#00D2FF" />
@@ -14,19 +22,16 @@
   <rect x="160" y="270" width="100" height="16" rx="8" fill="#ffffff" />
 
   <!-- Share Network Icon Connections -->
-  <line x1="330" y1="280" x2="410" y2="220" stroke="#1E1E2F" stroke-width="16" stroke-linecap="round" />
-  <line x1="330" y1="280" x2="410" y2="340" stroke="#1E1E2F" stroke-width="16" stroke-linecap="round" />
+  <line x1="330" y1="280" x2="410" y2="220" class="share-line" stroke-width="16" stroke-linecap="round" />
+  <line x1="330" y1="280" x2="410" y2="340" class="share-line" stroke-width="16" stroke-linecap="round" />
 
   <!-- Share Network Nodes -->
-  <circle cx="330" cy="280" r="30" fill="#1E1E2F" />
-  <circle cx="410" cy="220" r="22" fill="#1E1E2F" />
-  <circle cx="410" cy="340" r="22" fill="#1E1E2F" />
+  <circle cx="330" cy="280" r="30" class="share-node" />
+  <circle cx="410" cy="220" r="22" class="share-node" />
+  <circle cx="410" cy="340" r="22" class="share-node" />
   
   <!-- Inner Dots for Nodes -->
   <circle cx="330" cy="280" r="12" fill="#00D2FF" />
-  <circle cx="410" cy="220" r="8" fill="#ffffff" />
-  <circle cx="410" cy="340" r="8" fill="#ffffff" />
-
-  <!-- NoteShare Typography -->
-  <text x="250" y="470" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="#1E1E2F" text-anchor="middle">NoteShare</text>
+  <circle cx="410" cy="220" r="8" class="node-dot" />
+  <circle cx="410" cy="340" r="8" class="node-dot" />
 </svg>

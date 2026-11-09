@@ -8,7 +8,7 @@ export const metadata = {
   description: "A fast online notepad. Write instantly, share with a link, protect with a password. No account needed.",
   manifest: "/manifest.webmanifest",
   appleWebApp: { capable: true, title: "NoteShare" },
-  icons: { icon: "/icons/icon-192.png", apple: "/icons/icon-192.png" },
+  icons: { icon: "/noteshare.svg", apple: "/noteshare.svg" },
   openGraph: { title: "NoteShare", description: "Write. Save. Share.", type: "website" },
 };
 export const viewport = {
