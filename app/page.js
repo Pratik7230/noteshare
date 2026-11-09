@@ -2,6 +2,7 @@ import { FileClock, History, KeyRound, Link2, Lock, PenLine, QrCode, ShieldCheck
 import { SiteHeader } from "@/components/site-header";
 import { StartWritingButton, TemplateCard } from "@/components/start-writing";
 import { Logo } from "@/components/logo";
+import { FallingLeaves } from "@/components/falling-leaves";
 
 const features = [
   { icon: PenLine, title: "Rich, Markdown or plain", text: "Headings, tables, checklists, code blocks with highlighting, and a live Markdown preview." },
@@ -27,6 +28,7 @@ export default function Home() {
   return (
     <>
       <SiteHeader />
+      <FallingLeaves fullScreen shapes={['maple']} />
       <main>
         <section className="mx-auto max-w-4xl px-4 pb-16 pt-16 text-center sm:pt-24">
           <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">

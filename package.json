@@ -33,6 +33,7 @@
     "clsx": "^2.1.1",
     "dompurify": "^3.4.17",
     "dotenv": "^18.0.9",
+    "falling-leaves": "^0.1.0",
     "html-to-text": "^10.0.1",
     "jose": "^6.2.15",
     "lowlight": "^3.3.0",

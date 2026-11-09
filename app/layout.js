@@ -1,4 +1,5 @@
 import "./globals.css";
+import Script from "next/script";
 import Providers from "@/components/providers";
 
 export const metadata = {
@@ -19,7 +20,11 @@ const themeScript = `try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
+      <head>
+        <Script id="theme-script" strategy="beforeInteractive">
+          {themeScript}
+        </Script>
+      </head>
       <body><Providers>{children}</Providers></body>
     </html>
   );

@@ -1,3 +1,9 @@
 import { VerifyEmail } from "@/components/auth-forms";
+import FallingLeaves from "@/components/falling-leaves";
 export const metadata = { title: "Verify email" };
-export default function Page() { return <VerifyEmail />; }
+export default function Page() {
+    return <>
+        <FallingLeaves fullScreen shapes={['maple']} />
+        <VerifyEmail />
+    </>;
+}
