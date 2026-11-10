@@ -4,7 +4,7 @@
   "description": "Write. Save. Share.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f131b",
+  "background_color": "#f6f7fb",
   "theme_color": "#2f5bea",
   "icons": [
     { "src": "/noteshare.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
