@@ -17,7 +17,7 @@ function Btn({ label, active, disabled, onClick, children }) {
 }
 const Sep = () => <span className="mx-1 h-5 w-px shrink-0 bg-border" />;
 
-export function Toolbar({ editor, onImage, onLink, onFind }) {
+export function Toolbar({ editor, onImage, onLink, onFind, className, maxWidth = "max-w-7xl" }) {
   const s = useEditorState({
     editor,
     selector: ({ editor: e }) => ({
@@ -31,7 +31,7 @@ export function Toolbar({ editor, onImage, onLink, onFind }) {
   const run = (fn) => () => fn(editor.chain().focus()).run();
 
   return (
-    <div className="flex items-center gap-0.5 overflow-x-auto border-b bg-card px-2 py-1.5" role="toolbar" aria-label="Formatting">
+    <div className={cn("mx-auto flex items-center gap-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden px-4 py-1.5", maxWidth, className)} role="toolbar" aria-label="Formatting">
       <Btn label="Undo (Ctrl+Z)" disabled={!s.canUndo} onClick={run((c) => c.undo())}><Undo2 /></Btn>
       <Btn label="Redo (Ctrl+Y)" disabled={!s.canRedo} onClick={run((c) => c.redo())}><Redo2 /></Btn>
       <Sep />

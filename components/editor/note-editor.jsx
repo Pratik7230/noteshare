@@ -363,12 +363,13 @@ export default function NoteEditor({ slug: initialSlug }) {
 
   const statusLabel = { saved: updatedAt ? `Saved ${timeAgo(updatedAt)}` : "Saved", saving: "Saving…", dirty: "Unsaved changes", error: "Couldn't save" }[saveState];
   const mdShowEdit = mdView !== "preview", mdShowPreview = mdView !== "edit";
+  const pageMaxWidth = "max-w-7xl";
 
   return (
     <div className="flex min-h-dvh flex-col" data-editor-surface>
       {!zen && (
-        <header className="sticky top-0 z-30 border-b bg-background/90 backdrop-blur">
-          <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-2 px-3 py-2">
+        <header className="sticky top-0 z-30 border-b bg-background/95 backdrop-blur">
+          <div className={`mx-auto flex items-center gap-2 px-4 py-2 ${pageMaxWidth}`}>
             <Logo href={user ? "/dashboard" : "/"} />
             <span className={`ml-2 hidden items-center gap-1.5 text-xs sm:flex ${saveState === "error" ? "text-destructive" : "text-muted-foreground"}`} aria-live="polite">
               {saveState === "saving" ? <Loader2 className="size-3 animate-spin" /> : saveState === "saved" ? <Check className="size-3" /> : <Clock className="size-3" />}
@@ -381,9 +382,9 @@ export default function NoteEditor({ slug: initialSlug }) {
                 </Select>
               )}
               <Button size="sm" onClick={() => setDlg("share")}><Share2 /> <span className="hidden sm:inline">Share</span></Button>
-              {note.access.isManager && <Button size="icon" variant="outline" aria-label="Note settings" onClick={() => setDlg("settings")}><Settings2 /></Button>}
+              {note.access.isManager && <Button size="icon-sm" variant="outline" aria-label="Note settings" onClick={() => setDlg("settings")}><Settings2 /></Button>}
               <DropdownMenu>
-                <DropdownMenuTrigger asChild><Button size="icon" variant="outline" aria-label="Export"><Download /></Button></DropdownMenuTrigger>
+                <DropdownMenuTrigger asChild><Button size="icon-sm" variant="outline" aria-label="Export"><Download /></Button></DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuLabel>Export as</DropdownMenuLabel>
                   {[["txt", "Plain text (.txt)"], ["md", "Markdown (.md)"], ["html", "HTML (.html)"], ["pdf", "PDF (.pdf)"]].map(([f, l]) => (
@@ -392,7 +393,7 @@ export default function NoteEditor({ slug: initialSlug }) {
                 </DropdownMenuContent>
               </DropdownMenu>
               <DropdownMenu>
-                <DropdownMenuTrigger asChild><Button size="icon" variant="outline" aria-label="More actions"><MoreHorizontal /></Button></DropdownMenuTrigger>
+                <DropdownMenuTrigger asChild><Button size="icon-sm" variant="outline" aria-label="More actions"><MoreHorizontal /></Button></DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem onSelect={() => setFindOpen(true)}><Search /> Find and replace</DropdownMenuItem>
                   {canEdit && <DropdownMenuItem onSelect={() => setDlg("versions")}><History /> Version history</DropdownMenuItem>}
@@ -407,47 +408,54 @@ export default function NoteEditor({ slug: initialSlug }) {
                   {note.access.isManager && (<><DropdownMenuSeparator /><DropdownMenuItem onSelect={() => setDlg("delete")} className="text-destructive"><Trash2 /> Delete note</DropdownMenuItem></>)}
                 </DropdownMenuContent>
               </DropdownMenu>
-              <ThemeToggle />
+              <ThemeToggle size="icon-sm" />
             </div>
           </div>
+
+          {!canEdit && (
+            <div className="border-t bg-accent px-4 py-2 text-center text-sm">
+              <div className={`mx-auto ${pageMaxWidth}`}>
+                You're viewing this note in read-only mode. <button onClick={duplicate} className="font-medium text-primary underline cursor-pointer">Make a copy</button> to edit your own version.
+              </div>
+            </div>
+          )}
+
+          {canEdit && mode === "rich" && editor && (
+            <div className="border-t bg-card/40">
+              <Toolbar editor={editor} onImage={() => pickFile("image")} onLink={addLink} onFind={() => setFindOpen(true)} maxWidth={pageMaxWidth} />
+            </div>
+          )}
+
+          {canEdit && mode === "markdown" && (
+            <div className="border-t bg-card/40">
+              <div className={`mx-auto flex items-center gap-2 px-4 py-1.5 ${pageMaxWidth}`}>
+                <div role="group" aria-label="Markdown view" className="flex rounded-lg border p-0.5 text-xs bg-card">
+                  {[["edit", "Write"], ["split", "Split"], ["preview", "Preview"]].map(([v, l]) => (
+                    <button key={v} onClick={() => setMdView(v)} aria-pressed={mdView === v} className={`rounded-md px-2.5 py-1 cursor-pointer transition-colors ${mdView === v ? "bg-accent text-primary font-medium" : "hover:bg-muted"}`}>{l}</button>
+                  ))}
+                </div>
+                <Button variant="ghost" size="sm" onClick={() => pickFile("image")}><ImageIcon /> Image</Button>
+                <Select value={mode} onChange={(e) => switchMode(e.target.value)} className="ml-auto h-8 w-32 sm:hidden" aria-label="Editing mode">
+                  {Object.entries(MODES).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                </Select>
+              </div>
+            </div>
+          )}
         </header>
       )}
 
       {zen && (
         <Button variant="outline" size="icon-sm" className="fixed right-3 top-3 z-40 bg-card" onClick={toggleZen} aria-label="Exit full screen"><Minimize2 /></Button>
       )}
-
-      {!canEdit && (
-        <div className="border-b bg-accent px-4 py-2 text-center text-sm">
-          You're viewing this note in read-only mode. <button onClick={duplicate} className="font-medium text-primary underline cursor-pointer">Make a copy</button> to edit your own version.
-        </div>
-      )}
-
-      {canEdit && mode === "rich" && editor && !zen && (
-        <div className="sticky top-[53px] z-20"><Toolbar editor={editor} onImage={() => pickFile("image")} onLink={addLink} onFind={() => setFindOpen(true)} /></div>
-      )}
-      {canEdit && mode === "markdown" && !zen && (
-        <div className="sticky top-[53px] z-20 flex items-center gap-2 border-b bg-card px-3 py-1.5">
-          <div role="group" aria-label="Markdown view" className="flex rounded-lg border p-0.5 text-xs">
-            {[["edit", "Write"], ["split", "Split"], ["preview", "Preview"]].map(([v, l]) => (
-              <button key={v} onClick={() => setMdView(v)} aria-pressed={mdView === v} className={`rounded-md px-2.5 py-1 cursor-pointer ${mdView === v ? "bg-accent text-primary" : ""}`}>{l}</button>
-            ))}
-          </div>
-          <Button variant="ghost" size="sm" onClick={() => pickFile("image")}><ImageIcon /> Image</Button>
-          <Select value={mode} onChange={(e) => switchMode(e.target.value)} className="ml-auto h-8 w-32 sm:hidden" aria-label="Editing mode">
-            {Object.entries(MODES).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-          </Select>
-        </div>
-      )}
       {canEdit && mode !== "markdown" && !zen && (
-        <div className="px-3 pt-2 sm:hidden">
+        <div className={`mx-auto px-4 pt-2 sm:hidden ${pageMaxWidth}`}>
           <Select value={mode} onChange={(e) => switchMode(e.target.value)} className="h-8" aria-label="Editing mode">
             {Object.entries(MODES).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
           </Select>
         </div>
       )}
 
-      <main className={`mx-auto w-full flex-1 px-3 py-5 sm:px-4 ${mode === "markdown" && mdView === "split" ? "max-w-6xl" : "max-w-3xl"}`}>
+      <main className={`mx-auto w-full flex-1 px-4 py-5 ${pageMaxWidth}`}>
         <input
           value={title} readOnly={!canEdit} maxLength={255} placeholder="Untitled"
           onChange={(e) => { setTitle(e.target.value); refs.current.title = e.target.value; touch(); }}
@@ -475,7 +483,7 @@ export default function NoteEditor({ slug: initialSlug }) {
 
       {!zen && (
         <footer className="sticky bottom-0 z-10 border-t bg-background/90 backdrop-blur">
-          <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-4 gap-y-1 px-4 py-1.5 text-xs text-muted-foreground">
+          <div className={`mx-auto flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-1.5 text-xs text-muted-foreground ${pageMaxWidth}`}>
             <span>{stats.words} words</span><span>{stats.chars} characters</span><span>{stats.minutes} min read</span>
             <span className="sm:hidden">{statusLabel}</span>
             {note.isAnonymous && !user && note.access.isManager && (
