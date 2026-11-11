@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Archive, Clock, FileText, LayoutGrid, List, LogOut, MailWarning, Plus, Search, Share2, Star, Trash2, Users } from "lucide-react";
+import { Archive, Clock, FileText, LayoutGrid, List, LogOut, MailWarning, UserRound, Plus, Search, Share2, Star, Trash2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Avatar } from "@/components/avatar";
 import { NoteCard } from "./note-card";
 import { useAuth } from "@/hooks/useAuth";
 import { useDebouncedCallback } from "@/hooks/useDebouncedCallback";
@@ -113,10 +114,11 @@ export default function Dashboard() {
             <ThemeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" aria-label="Account" className="font-semibold">{user.name.slice(0, 1).toUpperCase()}</Button>
+                <Button variant="ghost" size="icon" aria-label="Account menu" className="rounded-full p-0"><Avatar user={user} size={36} /></Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
+                <DropdownMenuItem onSelect={() => router.push("/account")}><UserRound /> Account settings</DropdownMenuItem>
                 <DropdownMenuItem onSelect={async () => { await logout(); router.push("/"); }}><LogOut /> Log out</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

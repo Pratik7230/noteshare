@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select } from "@/components/ui/select";
 import { api, editKeys } from "@/lib/api-client";
+import { Avatar } from "@/components/avatar";
 
 const copy = async (text, msg) => {
   try { await navigator.clipboard.writeText(text); toast.success(msg); } catch { toast.error("Could not copy"); }
@@ -115,7 +116,7 @@ export function ShareDialog({ open, onOpenChange, note, slug, user, onNoteChange
               <ul className="mt-3 grid gap-1.5 text-sm">
                 {people.collaborators.map((c) => (
                   <li key={c.userId} className="flex items-center justify-between rounded-lg bg-muted px-3 py-1.5">
-                    <span>{c.name} <span className="text-muted-foreground">({c.email}) · {c.permission.toLowerCase()}</span></span>
+                    <span className="flex min-w-0 items-center gap-2"><Avatar user={{ name: c.name, avatarUrl: c.avatarUrl }} size={24} /><span className="truncate">{c.name} <span className="text-muted-foreground">({c.email}) · {c.permission.toLowerCase()}</span></span></span>
                     <Button variant="ghost" size="icon-sm" aria-label={`Remove ${c.name}`} onClick={() => revoke({ userId: c.userId })}><Trash2 /></Button>
                   </li>
                 ))}

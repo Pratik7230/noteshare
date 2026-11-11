@@ -4,6 +4,7 @@ import { DataSource } from "typeorm";
 import { entities } from "./entities/index.js";
 import { SnakeNamingStrategy } from "./lib/naming.js";
 import { InitialSchema1730000000000 } from "./migrations/1730000000000-InitialSchema.js";
+import { AddUserProfile1730000000001 } from "./migrations/1730000000001-AddUserProfile.js";
 import "dotenv/config";
 
 // Explicitly ensure PostgreSQL driver is loaded
@@ -24,6 +25,7 @@ export const dataSourceOptions = {
 
   migrations: [
     InitialSchema1730000000000,
+    AddUserProfile1730000000001,
   ],
 
   namingStrategy: new SnakeNamingStrategy(),

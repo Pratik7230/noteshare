@@ -34,11 +34,11 @@ export const shareService = {
     const { note } = await loadForManage(idOrSlug, ctx);
     const db = await getDb();
     const perms = await db.getRepository(NotePermission).createQueryBuilder("p")
-      .innerJoin(User, "u", "u.id = p.userId").select(["p.id AS id", "p.permission AS permission", "u.name AS name", "u.email AS email", "u.id AS user_id"])
+      .innerJoin(User, "u", "u.id = p.userId").select(["p.id AS id", "p.permission AS permission", "u.name AS name", "u.email AS email", "u.id AS user_id", "u.avatarUpdatedAt AS avatar_v"])
       .where("p.noteId = :id", { id: note.id }).getRawMany();
     const pending = await db.getRepository(NoteInvitation).find({ where: { noteId: note.id } });
     return {
-      collaborators: perms.map((p) => ({ userId: p.user_id, name: p.name, email: p.email, permission: p.permission })),
+      collaborators: perms.map((p) => ({ userId: p.user_id, name: p.name, email: p.email, permission: p.permission, avatarUrl: p.avatar_v ? `/api/users/${p.user_id}/avatar?v=${new Date(p.avatar_v).getTime()}` : null })),
       pending: pending.filter((i) => !i.acceptedAt && i.expiresAt > new Date()).map((i) => ({ id: i.id, email: i.email, permission: i.permission })),
     };
   },
