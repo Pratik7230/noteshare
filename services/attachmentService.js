@@ -1,8 +1,7 @@
-import { randomUUID } from "node:crypto";
 import { getDb } from "../lib/db.js";
 import { NoteAttachment } from "../entities/index.js";
 import { badRequest, forbidden, notFound } from "../lib/errors.js";
-import { putObject, getObject, removeObject } from "../lib/storage.js";
+import { putObject, getObject, removeObject, storagePaths, isRemoteUrl, getObjectStream } from "../lib/storage.js";
 import { loadForEdit, loadReadable } from "./noteService.js";
 
 export const MAX_SIZE = 5 * 1024 * 1024;
@@ -29,9 +28,9 @@ export const attachmentService = {
     const db = await getDb();
     const repo = db.getRepository(NoteAttachment);
     if ((await repo.count({ where: { noteId: note.id } })) >= MAX_PER_NOTE) throw badRequest("Attachment limit reached");
-    const storageKey = `${note.id}/${randomUUID()}`;
-    await putObject(storageKey, buf);
     const filename = file.name.replace(/[^\w.\- ]+/g, "_").slice(0, 200) || "file";
+    const pathKey = storagePaths.attachment(note.id, filename);
+    const { storageKey } = await putObject(pathKey, buf, { contentType: mime });
     const a = await repo.save(repo.create({ noteId: note.id, filename, storageKey, mimeType: mime, size: buf.length }));
     return { id: a.id, filename, mimeType: mime, size: a.size, url: `/api/attachments/${a.id}` };
   },
@@ -45,7 +44,13 @@ export const attachmentService = {
     if (!a) throw notFound();
     const { access } = await loadReadable(a.noteId, ctx);
     if (!access.unlocked) throw forbidden();
-    return { a, data: await getObject(a.storageKey) };
+    const { stream, buffer } = await getObjectStream(a.storageKey);
+    return {
+      a,
+      stream,
+      buffer,
+      data: buffer,
+    };
   },
   async remove(id, ctx) {
     const repo = (await getDb()).getRepository(NoteAttachment);

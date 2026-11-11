@@ -5,6 +5,13 @@ const repo = async () => (await getDb()).getRepository(User);
 
 export const userRepository = {
   async findById(id) { return (await repo()).findOne({ where: { id } }); },
+  async findByIdWithAvatarKey(id) {
+    return (await repo()).createQueryBuilder("u").addSelect("u.avatarKey").where("u.id = :id", { id }).getOne();
+  },
+  async findByIdWithPassword(id) {
+    return (await repo()).createQueryBuilder("u").addSelect("u.password").where("u.id = :id", { id }).getOne();
+  },
+  async remove(id) { return (await repo()).delete({ id }); },
   async findByEmail(email) { return (await repo()).findOne({ where: { email } }); },
   async findByEmailWithPassword(email) {
     return (await repo()).createQueryBuilder("u").addSelect("u.password").where("u.email = :email", { email }).getOne();

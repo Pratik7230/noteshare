@@ -6,9 +6,13 @@ import { sendMail } from "../lib/mailer.js";
 
 const appUrl = () => process.env.APP_URL || "http://localhost:3000";
 const DUMMY_HASH = "$2b$12$C6UzMDM.H6dfI/f/IKcEeO5lA1p0k1d5Yp3h8F1m6y9aGx2x7w7yS"; // for constant-ish timing
-export const publicUser = (u) => ({ id: u.id, name: u.name, email: u.email, emailVerified: u.emailVerified });
+export const avatarUrlFor = (u) => (u.avatarUpdatedAt ? `/api/users/${u.id}/avatar?v=${new Date(u.avatarUpdatedAt).getTime()}` : null);
+export const publicUser = (u) => ({
+  id: u.id, name: u.name, email: u.email, emailVerified: u.emailVerified,
+  bio: u.bio || "", avatarUrl: avatarUrlFor(u), createdAt: u.createdAt,
+});
 
-async function sendVerification(user) {
+export async function sendVerification(user) {
   const token = randomToken();
   await userRepository.update(user.id, { emailVerifyTokenHash: sha256(token) });
   await sendMail({
