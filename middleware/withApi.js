@@ -2,6 +2,7 @@ import { ZodError } from "zod";
 import { ApiError, unauthorized, forbidden } from "../lib/errors.js";
 import { rateLimit } from "../lib/rate-limit.js";
 import { getUserId } from "../lib/auth.js";
+import { getUserState } from "../lib/user-state.js";
 
 const clientIp = (req) =>
   req.headers.get("x-forwarded-for")?.split(",")[0].trim() || req.headers.get("x-real-ip") || "local";
@@ -9,7 +10,7 @@ const clientIp = (req) =>
 /**
  * Wraps a route handler with: CSRF origin check, rate limiting, auth, validation-error
  * mapping and centralized error handling.
- *   withApi(handler, { auth: "required" | "optional", limit: [name, max, windowMs] })
+ *   withApi(handler, { auth: "required" | "optional" | "admin", limit: [name, max, windowMs] })
  */
 export function withApi(handler, { auth = "optional", limit } = {}) {
   return async (request, routeCtx = {}) => {
@@ -34,11 +35,22 @@ export function withApi(handler, { auth = "optional", limit } = {}) {
         }
       }
 
-      const userId = await getUserId();
-      if (auth === "required" && !userId) throw unauthorized();
+      let userId = await getUserId();
+      let role = null, suspended = false;
+      if (userId) {
+        // Admin routes always read fresh state; others use a 30s cache.
+        const state = await getUserState(userId, { fresh: auth === "admin" });
+        if (!state) userId = null; // account was deleted
+        else if (state.suspended) { suspended = true; userId = null; }
+        else role = state.role;
+      }
+      if (suspended && auth !== "optional") throw forbidden("Your account has been suspended");
+      if ((auth === "required" || auth === "admin") && !userId) throw unauthorized();
+      if (auth === "admin" && role !== "admin") throw forbidden("Admins only");
 
       const ctx = {
         userId,
+        role,
         ip,
         ua: request.headers.get("user-agent") || "",
         editKey: request.headers.get("x-edit-key") || null,

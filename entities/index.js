@@ -9,13 +9,16 @@ import { NoteStar } from "./NoteStar.js";
 import { NoteAttachment } from "./NoteAttachment.js";
 import { NoteInvitation } from "./NoteInvitation.js";
 import { NoteSlugRedirect } from "./NoteSlugRedirect.js";
+import { AuditLog } from "./AuditLog.js";
+import { NoteReport } from "./NoteReport.js";
+import { SiteSetting } from "./SiteSetting.js";
 
 export {
   User, Note, NotePermission, NoteVersion, Tag, NoteTag,
-  NoteView, NoteStar, NoteAttachment, NoteInvitation, NoteSlugRedirect,
+  NoteView, NoteStar, NoteAttachment, NoteInvitation, NoteSlugRedirect, AuditLog, NoteReport, SiteSetting,
 };
 
 export const entities = [
   User, Note, NotePermission, NoteVersion, Tag, NoteTag,
-  NoteView, NoteStar, NoteAttachment, NoteInvitation, NoteSlugRedirect,
+  NoteView, NoteStar, NoteAttachment, NoteInvitation, NoteSlugRedirect, AuditLog, NoteReport, SiteSetting,
 ];

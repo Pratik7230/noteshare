@@ -5,6 +5,7 @@ import { entities } from "./entities/index.js";
 import { SnakeNamingStrategy } from "./lib/naming.js";
 import { InitialSchema1730000000000 } from "./migrations/1730000000000-InitialSchema.js";
 import { AddUserProfile1730000000001 } from "./migrations/1730000000001-AddUserProfile.js";
+import { AddAdmin1730000000002 } from "./migrations/1730000000002-AddAdmin.js";
 import "dotenv/config";
 
 // Explicitly ensure PostgreSQL driver is loaded
@@ -26,6 +27,7 @@ export const dataSourceOptions = {
   migrations: [
     InitialSchema1730000000000,
     AddUserProfile1730000000001,
+    AddAdmin1730000000002,
   ],
 
   namingStrategy: new SnakeNamingStrategy(),

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Archive, Clock, FileText, LayoutGrid, List, LogOut, MailWarning, UserRound, Plus, Search, Share2, Star, Trash2, Users } from "lucide-react";
+import { Archive, Clock, FileText, LayoutGrid, List, LogOut, MailWarning, ShieldCheck, UserRound, Plus, Search, Share2, Star, Trash2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -119,6 +119,7 @@ export default function Dashboard() {
               <DropdownMenuContent>
                 <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
                 <DropdownMenuItem onSelect={() => router.push("/account")}><UserRound /> Account settings</DropdownMenuItem>
+                {user.role === "admin" && <DropdownMenuItem onSelect={() => router.push("/admin")}><ShieldCheck /> Admin panel</DropdownMenuItem>}
                 <DropdownMenuItem onSelect={async () => { await logout(); router.push("/"); }}><LogOut /> Log out</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
