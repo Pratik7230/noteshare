@@ -19,6 +19,8 @@ export const Note = new EntitySchema({
     accessExpiresAt: { type: "timestamptz", nullable: true },
     maxViews: { type: "int", nullable: true },
     viewCount: { type: "int", default: 0 },
+    disabledAt: { type: "timestamptz", nullable: true },
+    disabledReason: { type: "varchar", length: 255, nullable: true },
     isArchived: { type: "boolean", default: false },
     isDeleted: { type: "boolean", default: false },
     deletedAt: { type: "timestamptz", nullable: true },

@@ -11,6 +11,7 @@ import { isUnlocked } from "../lib/auth.js";
 import { TEMPLATES } from "../lib/templates.js";
 import { removeObject } from "../lib/storage.js";
 import { noteDto } from "./noteDto.js";
+import { getSettings } from "./siteSettingsService.js";
 
 const VERSION_GAP_MS = 5 * 60 * 1000;
 const MAX_VERSIONS = 100;
@@ -48,6 +49,7 @@ export async function loadReadable(idOrSlug, ctx) {
   const access = await buildAccess(note, ctx);
   if (!access.canView) throw notFound("Note not found");
   if (note.isDeleted && !access.isManager) throw notFound("Note not found");
+  if (note.disabledAt) throw gone("This note was removed by a moderator");
   if (note.expiresAt && note.expiresAt < new Date()) throw gone("This note has expired");
   if (!access.isManager && !access.perm) {
     if (note.accessExpiresAt && note.accessExpiresAt < new Date()) throw gone("Access to this note has expired");
@@ -81,6 +83,7 @@ async function tagsFor(noteIds) {
 
 export const noteService = {
   async create(input, { userId }) {
+    if (!userId && !(await getSettings()).anonymousNotesEnabled) throw forbidden("Creating notes without an account is currently disabled. Please sign up or log in.");
     const tpl = input.template ? TEMPLATES[input.template] : null;
     const contentType = input.contentType || "rich";
     let slug;

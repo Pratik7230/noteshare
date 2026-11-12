@@ -3,12 +3,14 @@ import { userRepository } from "../repositories/userRepository.js";
 import { conflict, badRequest } from "../lib/errors.js";
 import { randomToken, sha256 } from "../lib/crypto.js";
 import { sendMail } from "../lib/mailer.js";
+import { getSettings } from "./siteSettingsService.js";
+import { forbidden } from "../lib/errors.js";
 
 const appUrl = () => process.env.APP_URL || "http://localhost:3000";
 const DUMMY_HASH = "$2b$12$C6UzMDM.H6dfI/f/IKcEeO5lA1p0k1d5Yp3h8F1m6y9aGx2x7w7yS"; // for constant-ish timing
 export const avatarUrlFor = (u) => (u.avatarUpdatedAt ? `/api/users/${u.id}/avatar?v=${new Date(u.avatarUpdatedAt).getTime()}` : null);
 export const publicUser = (u) => ({
-  id: u.id, name: u.name, email: u.email, emailVerified: u.emailVerified,
+  id: u.id, name: u.name, email: u.email, emailVerified: u.emailVerified, role: u.role || "user",
   bio: u.bio || "", avatarUrl: avatarUrlFor(u), createdAt: u.createdAt,
 });
 
@@ -23,6 +25,7 @@ export async function sendVerification(user) {
 
 export const authService = {
   async register({ name, email, password }) {
+    if (!(await getSettings()).registrationOpen) throw forbidden("Sign-ups are currently closed");
     if (await userRepository.findByEmail(email)) throw conflict("An account with this email already exists");
     const user = await userRepository.create({ name, email, password: await bcrypt.hash(password, 12) });
     await sendVerification(user);
@@ -32,6 +35,8 @@ export const authService = {
     const user = await userRepository.findByEmailWithPassword(email);
     const ok = await bcrypt.compare(password, user?.password || DUMMY_HASH);
     if (!user || !ok) throw badRequest("Invalid email or password");
+    if (user.suspendedAt) throw forbidden(user.suspendedReason ? `This account is suspended: ${user.suspendedReason}` : "This account is suspended");
+    await userRepository.update(user.id, { lastLoginAt: new Date() });
     return user;
   },
   async forgotPassword(email) {

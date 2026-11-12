@@ -70,9 +70,13 @@ export const profileService = {
     return publicUser(fresh);
   },
 
-  /** Permanently deletes the account and everything it owns. */
   async deleteAccount(userId, { password }) {
     await requirePassword(userId, password);
+    await this.purgeUser(userId);
+  },
+
+  /** Permanently deletes a user and everything they own (also used by admins). */
+  async purgeUser(userId) {
     const db = await getDb();
     const owned = await db.getRepository(Note).find({ where: { ownerId: userId }, select: { id: true } });
     for (const n of owned) await noteService.hardDelete(n.id); // removes attachments from storage too

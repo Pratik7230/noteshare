@@ -14,7 +14,7 @@ import TurndownService from "turndown";
 import { toast } from "sonner";
 import {
   AlertTriangle, Archive, Check, Clock, Copy, Download, FileUp, History, Loader2, Lock, Maximize2, Minimize2,
-  MoreHorizontal, Paperclip, Search, Settings2, Share2, Star, Trash2, Keyboard, Image as ImageIcon,
+  MoreHorizontal, Paperclip, Search, Settings2, Share2, Star, Trash2, Keyboard, Flag, Image as ImageIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,6 +32,7 @@ import { Toolbar } from "./toolbar";
 import { FindReplace } from "./find-replace";
 import { ShareDialog } from "./share-dialog";
 import { SettingsDialog } from "./settings-dialog";
+import { ReportDialog } from "./report-dialog";
 import { VersionsDialog } from "./versions-dialog";
 import { SearchHighlight } from "./search-extension";
 import { Rendered, markdownToHtml, plainToHtml, sanitizeHtml } from "./rendered";
@@ -405,6 +406,7 @@ export default function NoteEditor({ slug: initialSlug }) {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onSelect={toggleZen}><Maximize2 /> Full screen</DropdownMenuItem>
                   <DropdownMenuItem onSelect={() => setDlg("shortcuts")}><Keyboard /> Keyboard shortcuts</DropdownMenuItem>
+                  {!note.access.isManager && <DropdownMenuItem onSelect={() => setDlg("report")}><Flag /> Report note</DropdownMenuItem>}
                   {note.access.isManager && (<><DropdownMenuSeparator /><DropdownMenuItem onSelect={() => setDlg("delete")} className="text-destructive"><Trash2 /> Delete note</DropdownMenuItem></>)}
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -522,6 +524,8 @@ export default function NoteEditor({ slug: initialSlug }) {
           </div>
         </DialogContent>
       </Dialog>
+
+      <ReportDialog open={dlg === "report"} onOpenChange={(o) => !o && setDlg(null)} noteId={note.id} slug={slug} />
 
       <Dialog open={dlg === "shortcuts"} onOpenChange={(o) => !o && setDlg(null)}>
         <DialogContent>

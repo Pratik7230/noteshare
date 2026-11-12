@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/hooks/useAuth";
+import { Announcement } from "@/components/announcement";
 
 export default function Providers({ children }) {
   useEffect(() => {
@@ -11,6 +12,7 @@ export default function Providers({ children }) {
   }, []);
   return (
     <AuthProvider>
+      <Announcement />
       {children}
       <Toaster position="bottom-right" richColors closeButton />
     </AuthProvider>

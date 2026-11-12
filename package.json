@@ -10,7 +10,8 @@
     "db:migrate": "typeorm migration:run -d ./data-source.js",
     "db:revert": "typeorm migration:revert -d ./data-source.js",
     "db:show": "typeorm migration:show -d ./data-source.js",
-    "db:check": "node scripts/check-metadata.js"
+    "db:check": "node scripts/check-metadata.js",
+    "admin:make": "node scripts/make-admin.js"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.3.1",
