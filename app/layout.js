@@ -12,7 +12,10 @@ export const metadata = {
   openGraph: { title: "NoteShare", description: "Write. Save. Share.", type: "website" },
 };
 export const viewport = {
-  themeColor: "#f6f7fb",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f6f7fb" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
+  ],
 };
 
 const themeScript = `try{var t=localStorage.getItem('theme');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}`;
