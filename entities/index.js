@@ -12,13 +12,17 @@ import { NoteSlugRedirect } from "./NoteSlugRedirect.js";
 import { AuditLog } from "./AuditLog.js";
 import { NoteReport } from "./NoteReport.js";
 import { SiteSetting } from "./SiteSetting.js";
+import { SupportTicket } from "./SupportTicket.js";
+import { TicketMessage } from "./TicketMessage.js";
 
 export {
   User, Note, NotePermission, NoteVersion, Tag, NoteTag,
   NoteView, NoteStar, NoteAttachment, NoteInvitation, NoteSlugRedirect, AuditLog, NoteReport, SiteSetting,
+  SupportTicket, TicketMessage,
 };
 
 export const entities = [
   User, Note, NotePermission, NoteVersion, Tag, NoteTag,
   NoteView, NoteStar, NoteAttachment, NoteInvitation, NoteSlugRedirect, AuditLog, NoteReport, SiteSetting,
+  SupportTicket, TicketMessage,
 ];

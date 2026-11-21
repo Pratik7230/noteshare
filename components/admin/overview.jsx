@@ -12,12 +12,13 @@ export default function Overview() {
       <ListState loading={loading} error={error} onRetry={reload}>
         {data && (
           <div className="grid gap-6">
-            <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
               <StatCard label="Users" value={t.total_users.toLocaleString()} hint={`${t.new_users_7d} new this week`} />
               <StatCard label="Notes" value={t.total_notes.toLocaleString()} hint={`${t.new_notes_7d} new this week`} />
               <StatCard label="Total views" value={t.total_views.toLocaleString()} />
               <StatCard label="Storage used" value={fmtBytes(t.storage_bytes)} hint={`${t.attachments} ${t.attachments === 1 ? "attachment" : "attachments"}`} />
               <StatCard label="Open reports" value={t.open_reports} tone={t.open_reports ? "bad" : undefined} hint={t.open_reports ? "Needs review" : "All clear"} />
+              <StatCard label="Open tickets" value={t.open_tickets} tone={t.open_tickets ? "warn" : undefined} hint={t.open_tickets ? <Link href="/admin/tickets" className="underline">Waiting on a reply</Link> : "All answered"} />
               <StatCard label="Suspended users" value={t.suspended_users} tone={t.suspended_users ? "warn" : undefined} />
               <StatCard label="Disabled notes" value={t.disabled_notes} tone={t.disabled_notes ? "warn" : undefined} />
               <StatCard label="Admins" value={t.admins} />

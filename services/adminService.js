@@ -61,7 +61,8 @@ export const adminService = {
         (SELECT COALESCE(SUM(view_count), 0) FROM notes) AS total_views,
         (SELECT COUNT(*) FROM note_attachments) AS attachments,
         (SELECT COALESCE(SUM(size), 0) FROM note_attachments) AS storage_bytes,
-        (SELECT COUNT(*) FROM note_reports WHERE status = 'open') AS open_reports`);
+        (SELECT COUNT(*) FROM note_reports WHERE status = 'open') AS open_reports,
+        (SELECT COUNT(*) FROM support_tickets WHERE status = 'open') AS open_tickets`);
     const series = await db.query(`
       SELECT to_char(d::date, 'YYYY-MM-DD') AS day,
              (SELECT COUNT(*) FROM users WHERE created_at::date = d::date) AS users,
