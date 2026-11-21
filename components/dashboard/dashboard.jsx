@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Archive, Clock, FileText, LayoutGrid, List, LogOut, MailWarning, ShieldCheck, UserRound, Plus, Search, Share2, Star, Trash2, Users } from "lucide-react";
+import { Archive, Clock, FileText, LayoutGrid, LifeBuoy, List, LogOut, MailWarning, ShieldCheck, UserRound, Plus, Search, Share2, Star, Trash2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -50,12 +50,14 @@ export default function Dashboard() {
   const [error, setError] = useState("");
   const [tags, setTags] = useState([]);
   const [tick, setTick] = useState(0);
+  const [supportReplies, setSupportReplies] = useState(0); // tickets with an unread support reply
 
   const search = useDebouncedCallback((v) => { setQuery(v); setPage(1); }, 300);
 
   useEffect(() => { if (!loading && !user) router.replace("/login?next=/dashboard"); }, [loading, user, router]);
   useEffect(() => { try { setLayout(localStorage.getItem("dash-layout") || "grid"); } catch {} }, []);
   useEffect(() => { if (user) api("/tags").then((r) => setTags(r.tags)).catch(() => {}); }, [user, tick]);
+  useEffect(() => { if (user) api("/tickets?status=answered").then((r) => setSupportReplies(r.total)).catch(() => {}); }, [user]);
 
   useEffect(() => {
     if (!user) return;
@@ -114,11 +116,18 @@ export default function Dashboard() {
             <ThemeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" aria-label="Account menu" className="rounded-full p-0"><Avatar user={user} size={36} /></Button>
+                <Button variant="ghost" size="icon" aria-label={supportReplies ? `Account menu (${supportReplies} new support ${supportReplies === 1 ? "reply" : "replies"})` : "Account menu"} className="relative rounded-full p-0">
+                  <Avatar user={user} size={36} />
+                  {supportReplies > 0 && <span className="absolute right-0 top-0 size-2.5 rounded-full bg-primary ring-2 ring-background" aria-hidden="true" />}
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
                 <DropdownMenuItem onSelect={() => router.push("/account")}><UserRound /> Account settings</DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => router.push("/support")}>
+                  <LifeBuoy /> Help & support
+                  {supportReplies > 0 && <span className="ml-auto rounded-full bg-primary px-1.5 text-xs font-semibold text-primary-foreground">{supportReplies}</span>}
+                </DropdownMenuItem>
                 {user.role === "admin" && <DropdownMenuItem onSelect={() => router.push("/admin")}><ShieldCheck /> Admin panel</DropdownMenuItem>}
                 <DropdownMenuItem onSelect={async () => { await logout(); router.push("/"); }}><LogOut /> Log out</DropdownMenuItem>
               </DropdownMenuContent>
